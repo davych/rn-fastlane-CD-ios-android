@@ -1,0 +1,54 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "Submit a new Beta Build to Google Play"
+  lane :beta do
+    
+    # tests must pass
+    sh "yarn test"
+
+    gradle(task: "assembleRelease")
+    
+    # Upload to beta
+    # supply(track: 'beta')
+
+  end
+  desc "Submit a new Awesome Build to Google Play"
+  lane :gamma do
+    
+    # tests must pass
+    sh "yarn test"
+
+    # Bump version code for uploading
+    increment_version_code    
+    
+    # Get all correct icon sizes from source
+    android_appicon(
+      appicon_image_file: 'app-icon/icon-android.png',
+      # plugin < 0.11.0 use appicon_devices: [:phone, :tablet],
+      appicon_icon_types: [:launcher],
+      appicon_path: 'app/src/main/res/mipmap'
+    )    
+    
+    gradle(task: "assembleRelease")
+    
+    # Upload build
+    # supply
+
+  end  
+end
